@@ -96,6 +96,7 @@
             this.gboxServer.TabIndex = 0;
             this.gboxServer.TabStop = false;
             this.gboxServer.Text = "Server";
+            this.gboxServer.Enter += new System.EventHandler(this.gboxServer_Enter);
             // 
             // textBoxServerIP
             // 

@@ -853,6 +853,7 @@ namespace StandardProgrammingAssistant.StoredProcedureGenerator
 
             using (var sqlConn = new SqlConnection(connectionStringforSelectedDB))
             {
+
                 ExecuteQuery(textBoxSelectwText.Text, sqlConn);
                 ExecuteQuery(textBoxSelectwId.Text, sqlConn);
                 ExecuteQuery(textBoxDelete.Text, sqlConn);

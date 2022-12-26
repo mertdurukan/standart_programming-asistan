@@ -351,7 +351,6 @@ namespace StandardProgrammingAssistant.ModelGenerator
                         textBoxCsharp.AppendText(listColumn[i]);
                         textBoxCsharp.AppendText(" { get; set; }");
                         textBoxCsharp.AppendText(" = \"\";");
-
                     }
                     else if (listDataType[i].Contains("int"))
                     {
@@ -392,6 +391,11 @@ namespace StandardProgrammingAssistant.ModelGenerator
             try
             {
                 CreateConstructorForFlutter();
+
+                textBoxFlutter.AppendText(Environment.NewLine);
+                textBoxFlutter.AppendText("\t//#region Property");
+                textBoxFlutter.AppendText(Environment.NewLine);
+
                 for (int k = 0; k < totalColumnCount; k++)
                 {
                     textBoxFlutter.AppendText("\t@JsonKey(name: \"");
@@ -404,39 +408,179 @@ namespace StandardProgrammingAssistant.ModelGenerator
                         textBoxFlutter.AppendText("\tString ");
                         textBoxFlutter.AppendText(listColumn[k]);
                         textBoxFlutter.AppendText(" = \"\";");
-
+                        textBoxFlutter.AppendText(Environment.NewLine);
                     }
                     else if (listDataType[k].Contains("int"))
                     {
                         textBoxFlutter.AppendText("\tint ");
                         textBoxFlutter.AppendText(listColumn[k]);
                         textBoxFlutter.AppendText(" = -1;");
-
+                        textBoxFlutter.AppendText(Environment.NewLine);
                     }
                     else if (listDataType[k].Contains("datetime"))
                     {
                         textBoxFlutter.AppendText("\tDateTime ");
                         textBoxFlutter.AppendText(listColumn[k]);
-                        textBoxFlutter.AppendText(" = DateTime.utc(2111,01,01);");
+                        textBoxFlutter.AppendText(" = DateTime.fromMillisecondsSinceEpoch(0);");
+                        textBoxFlutter.AppendText(Environment.NewLine);
                     }
                     else if (listDataType[k].Contains("varbinary"))
                     {
                         textBoxFlutter.AppendText("\tList<int> ");
                         textBoxFlutter.AppendText(listColumn[k]);
                         textBoxFlutter.AppendText(" = [];");
+                        textBoxFlutter.AppendText(Environment.NewLine);
                     }
                     else
                     {
 
                     }
-                    textBoxFlutter.AppendText(Environment.NewLine + Environment.NewLine);
+                    if (k == totalColumnCount - 1)
+                        continue;
+                    textBoxFlutter.AppendText(Environment.NewLine);
                 }
+                textBoxFlutter.AppendText("\t//#endregion");
+                textBoxFlutter.AppendText(Environment.NewLine);
+                textBoxFlutter.AppendText(Environment.NewLine);
+
                 EncapsulationFlutter();
+
+                SqfLiteMethods();
+
             }
             catch (Exception ex)
             {
                 MessageBox.Show(ex.Message);
             }
+        }
+        void SqfLiteMethods()
+        {
+            textBoxFlutter.AppendText("\t//#region Map Operations");
+            textBoxFlutter.AppendText(Environment.NewLine);
+            #region toMap
+            textBoxFlutter.AppendText("\tMap<String, dynamic> toMap() {");
+            textBoxFlutter.AppendText(Environment.NewLine);
+            textBoxFlutter.AppendText("\t\tvar map = <String, dynamic>{};");
+            textBoxFlutter.AppendText(Environment.NewLine);
+            textBoxFlutter.AppendText("\t\tif (Id > 0) {");
+            textBoxFlutter.AppendText(Environment.NewLine);
+            textBoxFlutter.AppendText("\t\t\tmap[\"Id\"] = Id;");
+            textBoxFlutter.AppendText(Environment.NewLine);
+            textBoxFlutter.AppendText("\t\t}" + Environment.NewLine);
+
+            for (int k = 1; k < totalColumnCount; k++)
+            {
+                if (listDataType[k].Contains("datetime"))
+                {
+                    textBoxFlutter.AppendText("\t\tif(");
+                    textBoxFlutter.AppendText(listColumn[k]);
+                    textBoxFlutter.AppendText(".isAfter(DateTime.fromMillisecondsSinceEpoch(0))");
+                    textBoxFlutter.AppendText(")");
+                    textBoxFlutter.AppendText("{");
+                    textBoxFlutter.AppendText("");
+                    textBoxFlutter.AppendText(Environment.NewLine);
+                    textBoxFlutter.AppendText("\t\t\tmap[\"");
+                    textBoxFlutter.AppendText(listColumn[k]);
+                    textBoxFlutter.AppendText("\"] = ");
+                    textBoxFlutter.AppendText(listColumn[k]);
+                    textBoxFlutter.AppendText(";");
+                    textBoxFlutter.AppendText(Environment.NewLine);
+                    textBoxFlutter.AppendText("\t\t}");
+                    textBoxFlutter.AppendText(Environment.NewLine);
+                }
+                else if (listColumn[k].Contains("Ref"))
+                {
+                    textBoxFlutter.AppendText("\t\tif(");
+                    textBoxFlutter.AppendText(listColumn[k]);
+                    textBoxFlutter.AppendText(" > 0");
+                    textBoxFlutter.AppendText(")");
+                    textBoxFlutter.AppendText("{");
+                    textBoxFlutter.AppendText("");
+                    textBoxFlutter.AppendText(Environment.NewLine);
+                    textBoxFlutter.AppendText("\t\t\tmap[\"");
+                    textBoxFlutter.AppendText(listColumn[k]);
+                    textBoxFlutter.AppendText("\"] = ");
+                    textBoxFlutter.AppendText(listColumn[k]);
+                    textBoxFlutter.AppendText(";");
+                    textBoxFlutter.AppendText(Environment.NewLine);
+                    textBoxFlutter.AppendText("\t\t}");
+                    textBoxFlutter.AppendText(Environment.NewLine);
+                }
+                else
+                {
+                    textBoxFlutter.AppendText("\t\tmap[\"");
+                    textBoxFlutter.AppendText(listColumn[k]);
+                    textBoxFlutter.AppendText("\"] = ");
+                    textBoxFlutter.AppendText(listColumn[k]);
+                    textBoxFlutter.AppendText(";");
+                    textBoxFlutter.AppendText(Environment.NewLine);
+                }
+            }
+            textBoxFlutter.AppendText(Environment.NewLine);
+            textBoxFlutter.AppendText("\t\treturn map;");
+            textBoxFlutter.AppendText(Environment.NewLine);
+            textBoxFlutter.AppendText("\t}" + Environment.NewLine + Environment.NewLine);
+            #endregion
+
+            #region fromMap
+            textBoxFlutter.AppendText("\t" + selectedTableSingular + ".fromMap(dynamic map) {");
+            textBoxFlutter.AppendText(Environment.NewLine);
+            for (int k = 0; k < totalColumnCount; k++)
+            {
+                if (listDataType[k].Contains("datetime"))
+                {
+                    textBoxFlutter.AppendText("\t\tif(");
+                    textBoxFlutter.AppendText("map[\"");
+                    textBoxFlutter.AppendText(listColumn[k]);
+                    textBoxFlutter.AppendText("\"]");
+                    textBoxFlutter.AppendText(" != null");
+                    textBoxFlutter.AppendText(")");
+                    textBoxFlutter.AppendText("{");
+                    textBoxFlutter.AppendText(Environment.NewLine);
+                    textBoxFlutter.AppendText("\t\t\t");
+                    textBoxFlutter.AppendText(listColumn[k]);
+                    textBoxFlutter.AppendText(" = map[\"");
+                    textBoxFlutter.AppendText(listColumn[k]);
+                    textBoxFlutter.AppendText("\"];");
+                    textBoxFlutter.AppendText(Environment.NewLine);
+                    textBoxFlutter.AppendText("\t\t}");
+                    textBoxFlutter.AppendText(Environment.NewLine);
+                }
+                else if (listColumn[k].Contains("Ref"))
+                {
+                    textBoxFlutter.AppendText("\t\tif(");
+                    textBoxFlutter.AppendText("map[\"");
+                    textBoxFlutter.AppendText(listColumn[k]);
+                    textBoxFlutter.AppendText("\"]");
+                    textBoxFlutter.AppendText(" != null");
+                    textBoxFlutter.AppendText(")");
+                    textBoxFlutter.AppendText("{");
+                    textBoxFlutter.AppendText(Environment.NewLine);
+                    textBoxFlutter.AppendText("\t\t\t");
+                    textBoxFlutter.AppendText(listColumn[k]);
+                    textBoxFlutter.AppendText(" = map[\"");
+                    textBoxFlutter.AppendText(listColumn[k]);
+                    textBoxFlutter.AppendText("\"];");
+                    textBoxFlutter.AppendText(Environment.NewLine);
+                    textBoxFlutter.AppendText("\t\t}");
+                    textBoxFlutter.AppendText(Environment.NewLine);
+                }
+                else
+                {
+                    textBoxFlutter.AppendText("\t\t");
+                    textBoxFlutter.AppendText(listColumn[k]);
+                    textBoxFlutter.AppendText(" = map[\"");
+                    textBoxFlutter.AppendText(listColumn[k]);
+                    textBoxFlutter.AppendText("\"];");
+                    textBoxFlutter.AppendText(Environment.NewLine);
+                }
+            }
+
+            textBoxFlutter.AppendText("\t}" + Environment.NewLine);
+            #endregion
+
+            textBoxFlutter.AppendText("\t//#endregion");
+            textBoxFlutter.AppendText(Environment.NewLine);
         }
         void EditAndWritetoTypescriptTextBox()
         {
@@ -552,6 +696,8 @@ namespace StandardProgrammingAssistant.ModelGenerator
         {
             try
             {
+                textBoxFlutter.AppendText("\t//#region Encapsulation");
+                textBoxFlutter.AppendText(Environment.NewLine);
                 for (int i = 0; i < totalColumnCount; i++)
                 {
                     if (listDataType[i].Contains("char"))
@@ -559,12 +705,12 @@ namespace StandardProgrammingAssistant.ModelGenerator
                         textBoxFlutter.AppendText("\tString get" + listColumn[i] + "()" + Environment.NewLine);
                         textBoxFlutter.AppendText("\t{" + Environment.NewLine);
                         textBoxFlutter.AppendText("\t\treturn " + listColumn[i] + ";" + Environment.NewLine);
-                        textBoxFlutter.AppendText("\t}" + Environment.NewLine);
+                        textBoxFlutter.AppendText("\t}");
 
-                        textBoxFlutter.AppendText("\tvoid set" + listColumn[i] + "(String " + listColumn[i].ToLower().Replace("ý", "i") + ")" + Environment.NewLine);
+                        textBoxFlutter.AppendText("\tvoid set" + listColumn[i] + "(String " + listColumn[i].ToLower().Replace("ý", "i").Replace("ı", "i") + ")" + Environment.NewLine);
                         textBoxFlutter.AppendText("\t{" + Environment.NewLine);
-                        textBoxFlutter.AppendText("\t\t" + listColumn[i] + " = " + listColumn[i].ToLower().Replace("ý", "i") + ";" + Environment.NewLine);
-                        textBoxFlutter.AppendText("\t}" + Environment.NewLine);
+                        textBoxFlutter.AppendText("\t\t" + listColumn[i] + " = " + listColumn[i].ToLower().Replace("ý", "i").Replace("ı", "i") + ";" + Environment.NewLine);
+                        textBoxFlutter.AppendText("\t}");
                     }
                     else if (listDataType[i].Contains("int"))
                     {
@@ -573,10 +719,10 @@ namespace StandardProgrammingAssistant.ModelGenerator
                         textBoxFlutter.AppendText("\t\treturn " + listColumn[i] + ";" + Environment.NewLine);
                         textBoxFlutter.AppendText("\t}" + Environment.NewLine);
 
-                        textBoxFlutter.AppendText("\tvoid set" + listColumn[i] + "(int " + listColumn[i].ToLower().Replace("ý", "i") + ")" + Environment.NewLine);
+                        textBoxFlutter.AppendText("\tvoid set" + listColumn[i] + "(int " + listColumn[i].ToLower().Replace("ý", "i").Replace("ı", "i") + ")" + Environment.NewLine);
                         textBoxFlutter.AppendText("\t{" + Environment.NewLine);
-                        textBoxFlutter.AppendText("\t\t" + listColumn[i] + " = " + listColumn[i].ToLower().Replace("ý", "i") + ";" + Environment.NewLine);
-                        textBoxFlutter.AppendText("\t}" + Environment.NewLine);
+                        textBoxFlutter.AppendText("\t\t" + listColumn[i] + " = " + listColumn[i].ToLower().Replace("ý", "i").Replace("ı", "i") + ";" + Environment.NewLine);
+                        textBoxFlutter.AppendText("\t}");
 
                     }
                     else if (listDataType[i].Contains("datetime"))
@@ -586,22 +732,22 @@ namespace StandardProgrammingAssistant.ModelGenerator
                         textBoxFlutter.AppendText("\t\treturn " + listColumn[i] + ";" + Environment.NewLine);
                         textBoxFlutter.AppendText("\t}" + Environment.NewLine);
 
-                        textBoxFlutter.AppendText("\tvoid set" + listColumn[i] + "(DateTime " + listColumn[i].ToLower().Replace("ý", "i") + ")" + Environment.NewLine);
+                        textBoxFlutter.AppendText("\tvoid set" + listColumn[i] + "(DateTime " + listColumn[i].ToLower().Replace("ý", "i").Replace("ı", "i") + ")" + Environment.NewLine);
                         textBoxFlutter.AppendText("\t{" + Environment.NewLine);
-                        textBoxFlutter.AppendText("\t\t" + listColumn[i] + " = " + listColumn[i].ToLower().Replace("ý", "i") + ";" + Environment.NewLine);
-                        textBoxFlutter.AppendText("\t}" + Environment.NewLine);
+                        textBoxFlutter.AppendText("\t\t" + listColumn[i] + " = " + listColumn[i].ToLower().Replace("ý", "i").Replace("ı", "i") + ";" + Environment.NewLine);
+                        textBoxFlutter.AppendText("\t}");
                     }
                     else if (listDataType[i].Contains("varbinary"))
                     {
                         textBoxFlutter.AppendText("\tString get" + listColumn[i] + "()" + Environment.NewLine);
                         textBoxFlutter.AppendText("\t{" + Environment.NewLine);
                         textBoxFlutter.AppendText("\t\treturn " + listColumn[i] + ";" + Environment.NewLine);
-                        textBoxFlutter.AppendText("\t}" + Environment.NewLine);
+                        textBoxFlutter.AppendText("\t}");
 
-                        textBoxFlutter.AppendText("\tvoid set" + listColumn[i] + "(String " + listColumn[i].ToLower().Replace("ý", "i") + ")" + Environment.NewLine);
+                        textBoxFlutter.AppendText("\tvoid set" + listColumn[i] + "(String " + listColumn[i].ToLower().Replace("ý", "i").Replace("ı", "i") + ")" + Environment.NewLine);
                         textBoxFlutter.AppendText("\t{" + Environment.NewLine);
-                        textBoxFlutter.AppendText("\t\t" + listColumn[i] + " = " + listColumn[i].ToLower().Replace("ý", "i") + ";" + Environment.NewLine);
-                        textBoxFlutter.AppendText("\t}" + Environment.NewLine);
+                        textBoxFlutter.AppendText("\t\t" + listColumn[i] + " = " + listColumn[i].ToLower().Replace("ý", "i").Replace("ı", "i") + ";" + Environment.NewLine);
+                        textBoxFlutter.AppendText("\t}");
                     }
                     else
                     {
@@ -609,6 +755,9 @@ namespace StandardProgrammingAssistant.ModelGenerator
                     }
                     textBoxFlutter.AppendText(Environment.NewLine);
                 }
+                textBoxFlutter.AppendText("\t//#endregion");
+                textBoxFlutter.AppendText(Environment.NewLine);
+                textBoxFlutter.AppendText(Environment.NewLine);
             }
             catch (Exception ex)
             {
@@ -737,18 +886,16 @@ namespace StandardProgrammingAssistant.ModelGenerator
                     filePath += Environment.MachineName + "\\Desktop\\Flutter";
                 }
 
-                filePath += "\\" + selectedTableSingular.ToLower().Replace("ý", "i") + ".dart";
+                filePath += "\\" + selectedTableSingular.ToLower().Replace("ý", "i").Replace("ı", "i") + ".dart";
 
-                fileText += "// ignore_for_file: non_constant_identifier_names, depend_on_referenced_packages" + Environment.NewLine + Environment.NewLine;
+                fileText += "// ignore_for_file: non_constant_identifier_names, depend_on_referenced_packages, camel_case_types" + Environment.NewLine + Environment.NewLine;
 
                 fileText += "import 'package:json_annotation/json_annotation.dart';" + Environment.NewLine + Environment.NewLine;
-                fileText += "part '" + selectedTableSingular.ToLower().Replace("ý", "i") + ".g.dart';" + Environment.NewLine + Environment.NewLine;
+                fileText += "part '" + selectedTableSingular.ToLower().Replace("ý", "i").Replace("ı", "i") + ".g.dart';" + Environment.NewLine + Environment.NewLine;
                 fileText += "@JsonSerializable()" + Environment.NewLine;
-                fileText += "class " + selectedTableSingular + " {" + Environment.NewLine + Environment.NewLine;
+                fileText += "class " + selectedTableSingular + " {" + Environment.NewLine;
 
                 fileText += textBoxFlutter.Text;
-
-                fileText += "\t" + selectedTableSingular + "();" + Environment.NewLine;
 
                 fileText += "\tfactory " + selectedTableSingular + ".fromJson (Map<String, dynamic> json) => _$" + selectedTableSingular + "FromJson(json);" + Environment.NewLine;
                 fileText += "\tMap<String, dynamic> toJson() => _$" + selectedTableSingular + "ToJson(this);" + Environment.NewLine;
@@ -913,7 +1060,7 @@ namespace StandardProgrammingAssistant.ModelGenerator
 
                     }
 
-                    if(i != totalColumnCount - 1)
+                    if (i != totalColumnCount - 1)
                     {
                         textBoxCsharp.AppendText(", ");
                     }
@@ -940,8 +1087,9 @@ namespace StandardProgrammingAssistant.ModelGenerator
         {
             try
             {
+                MakeSelectedTableSingular(SelectedTable);
                 textBoxFlutter.AppendText("\t" + selectedTableSingular + "();" + Environment.NewLine);
-                textBoxFlutter.AppendText("\t" + selectedTableSingular + "(");
+                textBoxFlutter.AppendText("\t" + selectedTableSingular + ".withParameters" + "(");
 
                 for (int i = 0; i < totalColumnCount; i++)
                 {
@@ -995,7 +1143,7 @@ namespace StandardProgrammingAssistant.ModelGenerator
                     {
                         textBoxTypescript.AppendText(", ");
                     }
-                    
+
                 }
 
                 textBoxTypescript.AppendText(")" + Environment.NewLine + "\t{" + Environment.NewLine);
@@ -1014,13 +1162,10 @@ namespace StandardProgrammingAssistant.ModelGenerator
                 MessageBox.Show(ex.Message);
             }
         }
-        
-
         public SqlServerModelGenerator()
         {
             InitializeComponent();
         }
-
         private void checkBoxConnectAnotherServer_CheckedChanged(object sender, EventArgs e)
         {
             try
@@ -1046,12 +1191,10 @@ namespace StandardProgrammingAssistant.ModelGenerator
                 MessageBox.Show(ex.Message);
             }
         }
-
         private void textBoxServerIP_TextChanged(object sender, EventArgs e)
         {
             dataSource = "data source = " + textBoxServerIP.Text;
         }
-
         private void comboDb_SelectedIndexChanged(object sender, EventArgs e)
         {
             if (textBoxNamespace.Text == "Don't_forget_to_fill_me_in_please.")
@@ -1091,7 +1234,6 @@ namespace StandardProgrammingAssistant.ModelGenerator
                 MessageBox.Show("Please select another database. " + ex.Message);
             }
         }
-
         private void comboTable_SelectedIndexChanged(object sender, EventArgs e)
         {
             try
@@ -1124,7 +1266,6 @@ namespace StandardProgrammingAssistant.ModelGenerator
                 MessageBox.Show("Please select another database.");
             }
         }
-
         private void btnForSelectedTable_Click(object sender, EventArgs e)
         {
             try
@@ -1216,7 +1357,6 @@ namespace StandardProgrammingAssistant.ModelGenerator
                 MessageBox.Show(ex.Message);
             }
         }
-
         private void btnForSelectedDatabase_Click(object sender, EventArgs e)
         {
             try
@@ -1325,7 +1465,6 @@ namespace StandardProgrammingAssistant.ModelGenerator
                 MessageBox.Show("Beklenmedik hata: " + ex.Message);
             }
         }
-
         private void textBoxNamespace_TextChanged(object sender, EventArgs e)
         {
             namespace_ = textBoxNamespace.Text;
@@ -1339,7 +1478,6 @@ namespace StandardProgrammingAssistant.ModelGenerator
 
             }
         }
-
         private void pictureBoxUserGuide_Click(object sender, EventArgs e)
         {
             try
@@ -1353,17 +1491,14 @@ namespace StandardProgrammingAssistant.ModelGenerator
                 MessageBox.Show(ex.Message);
             }
         }
-
         private void picturePassword_MouseHover(object sender, EventArgs e)
         {
             ShowPassword();
         }
-
         private void picturePassword_MouseLeave(object sender, EventArgs e)
         {
             ShowPassword();
         }
-
         private void SqlServerModelGenerator_Load(object sender, EventArgs e)
         {
             extra = ";Trusted_Connection= true;";
@@ -1392,7 +1527,6 @@ namespace StandardProgrammingAssistant.ModelGenerator
                 MessageBox.Show(ex.Message);
             }
         }
-
         private void radioButtonSqlServerAuth_Click(object sender, EventArgs e)
         {
             comboDb.Enabled = false;
@@ -1408,7 +1542,6 @@ namespace StandardProgrammingAssistant.ModelGenerator
             ShowSqlServerLoginInterface(true);
             ClearItems();
         }
-
         private void radioButtonWindowsAuth_Click(object sender, EventArgs e)
         {
             lblConnect.Visible = false;
@@ -1423,17 +1556,14 @@ namespace StandardProgrammingAssistant.ModelGenerator
             ShowSqlServerLoginInterface(false);
             ClearItems();
         }
-
         private void btnConnect_MouseHover(object sender, EventArgs e)
         {
             btnConnect.BackColor = Color.DarkGreen;
         }
-
         private void btnConnect_MouseLeave(object sender, EventArgs e)
         {
             btnConnect.BackColor = Color.MediumSeaGreen;
         }
-
         private void btnConnect_Click(object sender, EventArgs e)
         {
             extra = "";
