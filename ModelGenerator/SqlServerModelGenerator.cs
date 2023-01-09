@@ -343,7 +343,7 @@ namespace StandardProgrammingAssistant.ModelGenerator
                 CreateConsturctorForCSharp();
                 for (int i = 0; i < totalColumnCount; i++)
                 {
-                    textBoxCsharp.AppendText("\tprivate ");
+                    textBoxCsharp.AppendText("\t\tpublic ");
 
                     if (listDataType[i].Contains("char"))
                     {
@@ -483,6 +483,7 @@ namespace StandardProgrammingAssistant.ModelGenerator
                     textBoxFlutter.AppendText(listColumn[k]);
                     textBoxFlutter.AppendText("\"] = ");
                     textBoxFlutter.AppendText(listColumn[k]);
+                    textBoxFlutter.AppendText(".toString()");
                     textBoxFlutter.AppendText(";");
                     textBoxFlutter.AppendText(Environment.NewLine);
                     textBoxFlutter.AppendText("\t\t}");
@@ -631,55 +632,55 @@ namespace StandardProgrammingAssistant.ModelGenerator
                 {
                     if (listDataType[i].Contains("char"))
                     {
-                        textBoxCsharp.AppendText(Environment.NewLine + "\tpublic string get" + listColumn[i] + "()" + Environment.NewLine);
-                        textBoxCsharp.AppendText("\t{" + Environment.NewLine);
-                        textBoxCsharp.AppendText("\t\t");
+                        textBoxCsharp.AppendText(Environment.NewLine + "\t\tpublic string get" + listColumn[i] + "()" + Environment.NewLine);
+                        textBoxCsharp.AppendText("\t\t{" + Environment.NewLine);
+                        textBoxCsharp.AppendText("\t\t\t");
                         textBoxCsharp.AppendText("return this." + listColumn[i] + ";");
-                        textBoxCsharp.AppendText(Environment.NewLine + "\t}");
+                        textBoxCsharp.AppendText(Environment.NewLine + "\t\t}");
 
-                        textBoxCsharp.AppendText(Environment.NewLine + "\tpublic void set" + listColumn[i] + "(string " + listColumn[i] + ")" + Environment.NewLine);
-                        textBoxCsharp.AppendText("\t{" + Environment.NewLine + "\t\t");
+                        textBoxCsharp.AppendText(Environment.NewLine + "\t\tpublic void set" + listColumn[i] + "(string " + listColumn[i] + ")" + Environment.NewLine);
+                        textBoxCsharp.AppendText("\t\t{" + Environment.NewLine + "\t\t\t");
                         textBoxCsharp.AppendText("this." + listColumn[i] + " = " + listColumn[i] + ";" + Environment.NewLine);
-                        textBoxCsharp.AppendText("\t}");
+                        textBoxCsharp.AppendText("\t\t}");
                     }
                     else if (listDataType[i].Contains("int"))
                     {
-                        textBoxCsharp.AppendText(Environment.NewLine + "\tpublic int get" + listColumn[i] + "()" + Environment.NewLine);
-                        textBoxCsharp.AppendText("\t{" + Environment.NewLine);
-                        textBoxCsharp.AppendText("\t\t");
+                        textBoxCsharp.AppendText(Environment.NewLine + "\t\tpublic int get" + listColumn[i] + "()" + Environment.NewLine);
+                        textBoxCsharp.AppendText("\t\t{" + Environment.NewLine);
+                        textBoxCsharp.AppendText("\t\t\t");
                         textBoxCsharp.AppendText("return this." + listColumn[i] + ";");
-                        textBoxCsharp.AppendText(Environment.NewLine + "\t}");
+                        textBoxCsharp.AppendText(Environment.NewLine + "\t\t}");
 
-                        textBoxCsharp.AppendText(Environment.NewLine + "\tpublic void set" + listColumn[i] + "(int " + listColumn[i] + ")" + Environment.NewLine);
-                        textBoxCsharp.AppendText("\t{" + Environment.NewLine + "\t\t");
+                        textBoxCsharp.AppendText(Environment.NewLine + "\t\tpublic void set" + listColumn[i] + "(int " + listColumn[i] + ")" + Environment.NewLine);
+                        textBoxCsharp.AppendText("\t\t{" + Environment.NewLine + "\t\t\t");
                         textBoxCsharp.AppendText("this." + listColumn[i] + " = " + listColumn[i] + ";" + Environment.NewLine);
-                        textBoxCsharp.AppendText("\t}");
+                        textBoxCsharp.AppendText("\t\t}");
                     }
                     else if (listDataType[i].Contains("datetime"))
                     {
-                        textBoxCsharp.AppendText(Environment.NewLine + "\tpublic DateTime get" + listColumn[i] + "()" + Environment.NewLine);
-                        textBoxCsharp.AppendText("\t{" + Environment.NewLine);
-                        textBoxCsharp.AppendText("\t\t");
+                        textBoxCsharp.AppendText(Environment.NewLine + "\t\tpublic DateTime get" + listColumn[i] + "()" + Environment.NewLine);
+                        textBoxCsharp.AppendText("\t\t{" + Environment.NewLine);
+                        textBoxCsharp.AppendText("\t\t\t");
                         textBoxCsharp.AppendText("return this." + listColumn[i] + ";");
-                        textBoxCsharp.AppendText(Environment.NewLine + "\t}");
+                        textBoxCsharp.AppendText(Environment.NewLine + "\t\t}");
 
-                        textBoxCsharp.AppendText(Environment.NewLine + "\tpublic void set" + listColumn[i] + "(DateTime " + listColumn[i] + ")" + Environment.NewLine);
-                        textBoxCsharp.AppendText("\t{" + Environment.NewLine + "\t\t");
+                        textBoxCsharp.AppendText(Environment.NewLine + "\t\tpublic void set" + listColumn[i] + "(DateTime " + listColumn[i] + ")" + Environment.NewLine);
+                        textBoxCsharp.AppendText("\t\t{" + Environment.NewLine + "\t\t\t");
                         textBoxCsharp.AppendText("this." + listColumn[i] + " = " + listColumn[i] + ";" + Environment.NewLine);
-                        textBoxCsharp.AppendText("\t}");
+                        textBoxCsharp.AppendText("\t\t}");
                     }
                     else if (listDataType[i].Contains("varbinary"))
                     {
                         textBoxCsharp.AppendText(Environment.NewLine + "\tpublic byte[] get" + listColumn[i] + "()" + Environment.NewLine);
-                        textBoxCsharp.AppendText("\t{" + Environment.NewLine);
-                        textBoxCsharp.AppendText("\t\t");
+                        textBoxCsharp.AppendText("\t\t{" + Environment.NewLine);
+                        textBoxCsharp.AppendText("\t\t\t");
                         textBoxCsharp.AppendText("return this." + listColumn[i] + ";");
-                        textBoxCsharp.AppendText(Environment.NewLine + "\t}");
+                        textBoxCsharp.AppendText(Environment.NewLine + "\t\t}");
 
-                        textBoxCsharp.AppendText(Environment.NewLine + "\tpublic void set" + listColumn[i] + "(byte[] " + listColumn[i] + ")" + Environment.NewLine);
-                        textBoxCsharp.AppendText("\t{" + Environment.NewLine + "\t\t");
+                        textBoxCsharp.AppendText(Environment.NewLine + "\t\tpublic void set" + listColumn[i] + "(byte[] " + listColumn[i] + ")" + Environment.NewLine);
+                        textBoxCsharp.AppendText("\t{\t" + Environment.NewLine + "\t\t\t");
                         textBoxCsharp.AppendText("this." + listColumn[i] + " = " + listColumn[i] + ";" + Environment.NewLine);
-                        textBoxCsharp.AppendText("\t}");
+                        textBoxCsharp.AppendText("\t\t}");
                     }
                     else
                     {
@@ -1030,8 +1031,8 @@ namespace StandardProgrammingAssistant.ModelGenerator
             try
             {
                 MakeSelectedTableSingular(SelectedTable);
-                textBoxCsharp.AppendText("\tpublic " + selectedTableSingular + "(){}" + Environment.NewLine);
-                textBoxCsharp.AppendText("\tpublic " + selectedTableSingular + "(");
+                textBoxCsharp.AppendText("\t\tpublic " + selectedTableSingular + "() { }" + Environment.NewLine);
+                textBoxCsharp.AppendText("\t\tpublic " + selectedTableSingular + "(");
                 for (int i = 0; i < totalColumnCount; i++)
                 {
 
@@ -1066,16 +1067,18 @@ namespace StandardProgrammingAssistant.ModelGenerator
                     }
                 }
 
-                textBoxCsharp.AppendText(")" + Environment.NewLine + "\t{" + Environment.NewLine);
+                textBoxCsharp.AppendText(")" + Environment.NewLine + "\t\t{" + Environment.NewLine);
 
                 for (int i = 0; i < totalColumnCount; i++)
                 {
-                    textBoxCsharp.AppendText("\t\tthis." + listColumn[i]);
+                    textBoxCsharp.AppendText("\t\t\tthis." + listColumn[i]);
                     textBoxCsharp.AppendText(" = " + listColumn[i]);
+                    textBoxCsharp.AppendText(";");
                     textBoxCsharp.AppendText(Environment.NewLine);
+
                 }
 
-                textBoxCsharp.AppendText("\t}" + Environment.NewLine);
+                textBoxCsharp.AppendText("\t\t}" + Environment.NewLine);
 
             }
             catch (Exception ex)
@@ -1505,7 +1508,7 @@ namespace StandardProgrammingAssistant.ModelGenerator
             comboDb.Enabled = true;
             comboTable.Enabled = true;
             ShowSqlServerLoginInterface(false);
-            textBoxNamespace.Text = "Don't_forget_to_fill_me_in_please.";
+            textBoxNamespace.Text = "Entities.Databases";
             textBoxNamespace.ForeColor = Color.Red;
             try
             {
