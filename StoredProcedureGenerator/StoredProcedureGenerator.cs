@@ -853,15 +853,22 @@ namespace StandardProgrammingAssistant.StoredProcedureGenerator
 
             using (var sqlConn = new SqlConnection(connectionStringforSelectedDB))
             {
+                try
+                {
+                    ExecuteQuery(textBoxSelectwText.Text, sqlConn);
 
-                ExecuteQuery(textBoxSelectwText.Text, sqlConn);
+                }
+                catch (Exception)
+                {
+                   
+                }
                 ExecuteQuery(textBoxSelectwId.Text, sqlConn);
                 ExecuteQuery(textBoxDelete.Text, sqlConn);
                 ExecuteQuery(textBoxUpdate.Text, sqlConn);
                 ExecuteQuery(textBoxInsert.Text, sqlConn);
             }
         }
-        void ClearTextBoxs()
+        void ClearAllTextBoxes()
         {
             textBoxSelectwText.Text = "";
             textBoxSelectwId.Text = "";
@@ -933,7 +940,7 @@ namespace StandardProgrammingAssistant.StoredProcedureGenerator
         {
             try
             {
-                ClearTextBoxs();
+                ClearAllTextBoxes();
                 if (comboTable.SelectedItem != null)
                 {
                     SelectedTable = comboTable.SelectedItem.ToString();
@@ -955,7 +962,7 @@ namespace StandardProgrammingAssistant.StoredProcedureGenerator
         {
             try
             {
-                ClearTextBoxs();
+                ClearAllTextBoxes();
                 if (comboDb.SelectedItem != null)
                 {
                     for (int i = 0; i < comboTable.Items.Count; i++)
@@ -965,7 +972,7 @@ namespace StandardProgrammingAssistant.StoredProcedureGenerator
 
                         if (i != comboTable.Items.Count - 1)
                         {
-                            ClearTextBoxs();
+                            ClearAllTextBoxes();
                         }
                         else
                         {

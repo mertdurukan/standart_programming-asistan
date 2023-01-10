@@ -540,9 +540,9 @@ namespace StandardProgrammingAssistant.ModelGenerator
                     textBoxFlutter.AppendText(Environment.NewLine);
                     textBoxFlutter.AppendText("\t\t\t");
                     textBoxFlutter.AppendText(listColumn[k]);
-                    textBoxFlutter.AppendText(" = map[\"");
+                    textBoxFlutter.AppendText(" = DateTime.parse(map[\"");
                     textBoxFlutter.AppendText(listColumn[k]);
-                    textBoxFlutter.AppendText("\"];");
+                    textBoxFlutter.AppendText("\"]);");
                     textBoxFlutter.AppendText(Environment.NewLine);
                     textBoxFlutter.AppendText("\t\t}");
                     textBoxFlutter.AppendText(Environment.NewLine);
